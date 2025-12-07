@@ -1,0 +1,36 @@
+# Buildozer / p4a cache
+.buildozer/
+bin/
+build/
+dist/
+
+# Build outputs
+*.aab
+*.apk
+*.apks
+*.jar
+*.zip
+*.gz
+
+# Python virtual environments
+venv/
+.venv/
+venv_aab/
+
+# Junk dirs from manual builds
+clean_aab/
+fixed_aab/
+out_apks/
+recipes/
+
+# Logs and buildozer temporary files
+*.txt
+*.log
+buildozer_*
+
+# Keys and sensitive files
+*.jks
+
+# Bundletool output
+bundle.apks
+bundletool.jar

@@ -2,37 +2,43 @@ name: Build APK (Stable p4a Docker)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Build APK with p4a docker
+      - name: Install Docker
         run: |
-          docker run --rm \
-            -v ${{ github.workspace }}:/home/user/app \
-            kivy/python-for-android \
+          sudo apt update
+          sudo apt install -y docker.io
+
+      - name: Build APK using python-for-android Docker
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/home/user/hostcwd \
+            kivy/python-for-android:latest \
             bash -c "
-              cd /home/user/app &&
-              pip install --upgrade Cython &&
-              python3 -m pythonforandroid.toolchain apk \
-                --private . \
-                --package org.test.myapp \
-                --name MyApp \
-                --version 1.0 \
-                --bootstrap sdl2 \
-                --requirements=python3,kivy \
-                --dist_name myapp \
-                --arch armeabi-v7a
+              pip install cython==0.29.36
+              cd /home/user/hostcwd
+              p4a apk --private . \
+                --package org.evolution.run \
+                --name EvolutionRun \
+                --version 0.1 \
+                --bootstrap kivy \
+                --requirements=kivy,python3 \
+                --arch armeabi-v7a \
+                --sdk-dir /opt/android-sdk \
+                --ndk-dir /opt/android-ndk \
+                --sdk-version 31
             "
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MyApp-APK
-          path: dist/*.apk
+          name: evolution-run-apk
+          path: *.apk

@@ -1,5 +1,5 @@
 
-name: Build AAB
+name: Build Android AAB
 
 on:
   workflow_dispatch:
@@ -10,30 +10,31 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3 python3-pip python3-setuptools \
-                              git zip unzip openjdk-17-jdk
+          sudo apt install -y \
+            python3-pip python3-setuptools git zip unzip openjdk-17-jdk \
+            libffi-dev libssl-dev libsqlite3-dev zlib1g zlib1g-dev \
+            libjpeg-dev libpng-dev build-essential
 
-      - name: Install buildozer
+      - name: Upgrade pip
         run: |
-          pip install --upgrade cython
+          python3 -m pip install --upgrade pip
+
+      - name: Install buildozer & cython
+        run: |
+          pip install Cython==0.29.36
           pip install buildozer
 
-      - name: Install p4a
-        run: pip install python-for-android
-
-      - name: Check buildozer.spec
-        run: cat buildozer.spec
-
       - name: Build AAB
-        run: buildozer -v android release
+        run: |
+          buildozer android release
 
       - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: app-aab
+          name: android-aab
           path: bin/*.aab

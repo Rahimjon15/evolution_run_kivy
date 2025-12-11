@@ -1,0 +1,49 @@
+name: Build Android AAB
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            python3 python3-pip python3-setuptools python3-wheel \
+            zip unzip openjdk-17-jdk \
+            libffi-dev libssl-dev autoconf automake libtool \
+            build-essential ccache git
+
+      - name: Install buildozer + Cython + Kivy
+        run: |
+          pip install --upgrade pip
+          pip install Cython
+          pip install buildozer
+          pip install kivy
+
+      - name: Install Android SDK / NDK
+        run: |
+          sudo mkdir -p /opt/android
+          sudo chmod -R 777 /opt/android
+          yes | sdkmanager --sdk_root=/opt/android "platform-tools" "platforms;android-33" "build-tools;33.0.0" "ndk;23.1.7779620"
+
+      - name: Build AAB
+        env:
+          ANDROIDSDK: /opt/android
+          ANDROIDNDK: /opt/android/ndk/23.1.7779620
+          ANDROIDAPI: 33
+          NDKAPI: 21
+        run: |
+          buildozer android release
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-aab
+          path: bin/*.aab

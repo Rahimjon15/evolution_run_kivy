@@ -1,3 +1,4 @@
+
 [app]
 title = Evolution Run
 package.name = evolution_run
@@ -9,31 +10,46 @@ version = 1.2.0
 fullscreen = 1
 orientation = landscape
 
+# Архитектуры
 android.archs = armeabi-v7a, arm64-v8a
-android.api = 35
-android.minapi = 21
-android.ndk = 21e
-android.ndk_path = /mnt/c/Users/VIRA/Android/ndk/android-ndk-r21e
 
-android.sdk_path = /mnt/c/Users/VIRA/Android
-android.sdk_api = 35
+# Buildozer поддерживает максимум 33 — используем его
+android.api = 33
+android.minapi = 21
+android.sdk_api = 33
+android.ndk = 23b
+
+# Не указываем локальные пути!
+# android.ndk_path =
+# android.sdk_path =
 
 android.build_mode = release
-android.gradle_dependencies = com.android.support:multidex:1.0.3
 
-# Включаем сборку App Bundle
+# Современный multidex
+android.gradle_dependencies = androidx.multidex:multidex:2.0.1
+
+# Включаем сборку AAB
 android.aab = True
 
-# Иконки/сплеш — пока пусто
+# Иконки
 icon.filename = %(source.dir)s/data/icon.png
 presplash.filename = %(source.dir)s/data/presplash.png
 
-requirements = python3,kivy
+requirements = kivy, cython
+
+# Вставляем targetSdkVersion = 35 ПРИНУДИТЕЛЬНО
+android.add_gradle_dependencies = com.android.tools.build:gradle:8.1.1
+android.gradle_options = -Pandroid.injected.build.model.only.versioned=3
+android.add_src = True
+
+# Ключевая строка!
+android.extra_gradle_options = 
+    android.compileSdkVersion=35
+    android.defaultConfig.targetSdkVersion=35
 
 [buildozer]
 log_level = 2
 warn_on_root = 0
-
 
 
 

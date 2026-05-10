@@ -1,57 +1,44 @@
 
+
 [app]
 title = Evolution Run
 package.name = evolution_run
 package.domain = org.rahimjon.run
 source.dir = .
-source.include_exts = py,png,jpg,kv,ogg,wav,mp3
+source.include_exts = py,png,jpg,kv,ttf,otf,mp3,wav,ogg,txt,json
 version = 1.2.0
 
 fullscreen = 1
 orientation = landscape
 
-# Архитектуры
-android.archs = armeabi-v7a, arm64-v8a
+# Архитектуры (убрал armeabi-v7a для скорости сборки)
+android.archs = arm64-v8a
 
-# Buildozer поддерживает максимум 33 — используем его
-android.api = 33
+# Упрощённые настройки SDK (без конфликтов)
+android.api = 30
 android.minapi = 21
-android.sdk_api = 33
-android.ndk = 23b
+android.sdk = 30
+android.ndk = 25c
 
-# Не указываем локальные пути!
-# android.ndk_path =
-# android.sdk_path =
+# Обязательные требования (добавил plyer и android)
+requirements = python3,kivy,plyer,android,hostpython3
 
-android.build_mode = release
+# Иконки (проверьте, что файлы реально существуют в папке data)
+icon.filename = data/icon.png
+presplash.filename = data/presplash.png
 
-# Современный multidex
-android.gradle_dependencies = androidx.multidex:multidex:2.0.1
+# Разрешения
+android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION
 
-# Включаем сборку AAB
-android.aab = True
-
-# Иконки
-icon.filename = %(source.dir)s/data/icon.png
-presplash.filename = %(source.dir)s/data/presplash.png
-
-requirements = kivy, cython
-
-# Вставляем targetSdkVersion = 35 ПРИНУДИТЕЛЬНО
-android.add_gradle_dependencies = com.android.tools.build:gradle:8.1.1
-android.gradle_options = -Pandroid.injected.build.model.only.versioned=3
-android.add_src = True
-
-# Ключевая строка!
-android.extra_gradle_options = 
-    android.compileSdkVersion=35
-    android.defaultConfig.targetSdkVersion=35
+# Остальное убираем (слишком сложные настройки ломают сборку)
+android.gradle_dependencies =
+android.add_gradle_dependencies =
+android.gradle_options =
+android.extra_gradle_options =
 
 [buildozer]
 log_level = 2
 warn_on_root = 0
-
-
 
 
 
